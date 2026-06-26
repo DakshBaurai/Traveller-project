@@ -23,4 +23,4 @@ const initDB = async () => {
 }
 
 initDB();
-
+//this code is used to store data in the mongoDB database which is stored in data.js
