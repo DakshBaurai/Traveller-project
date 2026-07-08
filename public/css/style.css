@@ -69,7 +69,7 @@ body{
     align-items:  space-evenly;
 }
 
-.card{
+.card-listing{
     border: none !important;
     margin-bottom: 2 rem;
 
