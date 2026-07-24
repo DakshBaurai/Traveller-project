@@ -5,9 +5,11 @@
         <div class="card card-listing" style="width: 24rem;">
             <img src="<%= listing.image.url %>" class="card-img-top" alt="...">
             <div class="card-body">
+                <p class="mt-2"> Listed By ~ <b><i><%= listing.owner.username %></i></b></p>
                 <p class="card-text"><%= listing.description %><br/> &#8377;<%= listing.price ? listing.price.toLocaleString("en-IN") : "Price not available" %> <br/> <%= listing.location %> <br/> <%= listing.country %></p>
             </div>
         </div>
+        <% if(currUser && currUser._id.equals(listing.owner._id) ) {%>
         <div class="d-flex gap-2 mt-3">
 
             <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark action-btn">
@@ -22,7 +24,9 @@
 
             </form>
         </div>
+        <% } %>
         <br/>
+        <% if(currUser) {%>
         <div class="mb-4">
         <hr/>  
             <h4>Leave a review </h4>
@@ -40,6 +44,7 @@
             </form>
         <hr/> 
         </div> 
+        <% } %>
     </div>
 <p><b>All Reviews</b></p>
 
@@ -48,7 +53,7 @@
         <div class="col-md-6 mb-3 ">
             <div class="card h-100 ">
                 <div class="card-body offset-1">
-                    <h5 class="card-title">John Doe</h5>
+                    <h5 class="card-title">Review by ~ <%= review.author.username %></h5>
                     <p class="card-text"><strong>Rating:</strong> <%= review.rating %></p>
                     <p class="card-text"><%= review.comment %></p>
                     <form class="mb-3" method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">

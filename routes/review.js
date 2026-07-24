@@ -7,19 +7,10 @@ const {listingSchema , reviewSchema} = require("../schema.js");
 
 //joi is used for schema validation of the data that is being sent to the server
 const Review = require("../models/review.js");
-
-const validateReview = (req,res,next) => {
-    let {error} = reviewSchema.validate(req.body);
-    if(error){
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(result.error,400); }
-    else{
-        next();
-    }
-}
+const {validateReview , isLoggedIn , isReviewAuthor} = require("../middleware.js");
 
 
-router.delete("/:reviewId" , wrapAsync( async(req,res)=>{
+router.delete("/:reviewId" ,  isLoggedIn , isReviewAuthor ,wrapAsync( async(req,res)=>{
     let {id,reviewId} = req.params;
 
     await Listing.findByIdAndUpdate(id, { $pull: {reviews: reviewId }});
@@ -44,10 +35,11 @@ router.delete("/:reviewId" , wrapAsync( async(req,res)=>{
 
 
 //post route for reviews
-router.post("/" , validateReview , wrapAsync(async(req,res)=>{
+router.post("/" , isLoggedIn ,validateReview , wrapAsync(async(req,res)=>{
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
     listing.reviews.push(newReview);
+    newReview.author = req.user._id;
     await newReview.save();
     await listing.save();
     req.flash("success" , "Review created!");
